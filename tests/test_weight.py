@@ -22,6 +22,11 @@ def test_road_divisor_doubles_volumetric() -> None:
     assert volumetric_weight_kg(D(60), D(50), D(40), D(3000)) == D(40)
 
 
+def test_pbr_pallet_of_foam_on_road() -> None:
+    # PBR pallet 120 x 100 cm, stacked to 160 cm, 180 kg of foam: cubes out at 640 kg.
+    assert chargeable_weight_kg(D(180), D(120), D(100), D(160), D(3000)) == D(640)
+
+
 def test_round_up_exact_multiple() -> None:
     assert round_up(D("2.0"), D("0.5")) == D("2.0")
 

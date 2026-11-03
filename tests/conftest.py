@@ -22,5 +22,11 @@ def table() -> TariffTable:
     )
 
 
-def make_invoice(freight: str, fuel: str, actual: str = "12.3") -> Invoice:
-    return Invoice("INV-1", "GRU-MIA", "air", D(actual), D(60), D(50), D(40), D(freight), D(fuel))
+def make_invoice(
+    freight: str, fuel: str, actual: str = "12.3", dims: tuple[str, str, str] = ("60", "50", "40")
+) -> Invoice:
+    # Default is the carton from docs/derivation.md section 5.
+    length, width, height = (D(x) for x in dims)
+    return Invoice(
+        "AWB 047-31884215", "GRU-MIA", "air", D(actual), length, width, height, D(freight), D(fuel)
+    )
