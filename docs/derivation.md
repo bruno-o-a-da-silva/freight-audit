@@ -1,8 +1,7 @@
-# Why volumetric weight exists: a physics-grounded derivation
+# Where volumetric weight comes from
 
-This note derives the chargeable-weight rule used by `freight_audit` from first
-principles, states every unit and assumption, and validates the code against a
-case computed by hand.
+The chargeable-weight rule in `freight_audit`, derived from the two capacity
+limits of a vehicle, with units, assumptions and one case worked by hand.
 
 ## 1. Quantities and units
 
@@ -116,4 +115,4 @@ C_min = 75.00; f = 18.5 %; D = 6000 cm³/kg.
 If the carrier billed with D = 5000 instead (m_v = 24.0 kg): freight 115.20,
 fuel 21.31, total 136.51, so the overcharge is 22.75. Both numbers are asserted
 in `tests/test_audit.py` (`test_hand_computed_case`,
-`test_overcharge_on_actual_weight_divisor_error`).
+`test_carrier_used_divisor_5000_instead_of_6000`).
