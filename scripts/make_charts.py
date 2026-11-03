@@ -3,9 +3,9 @@
 from collections import defaultdict
 from decimal import Decimal
 
+import matplotlib.pyplot as plt
 from _style import BG, GOLD, GOLD_DIM, IMG, MUTED, TEXT, style, title
 
-import matplotlib.pyplot as plt
 from freight_audit.audit import audit_all, summarize
 from freight_audit.synth import synthetic_invoices, synthetic_tariffs
 
