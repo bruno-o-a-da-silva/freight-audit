@@ -26,14 +26,27 @@ SANS = _family("Inter", "DejaVu Sans")
 
 
 def style() -> None:
-    plt.rcParams.update({
-        "font.family": SANS, "figure.facecolor": BG, "axes.facecolor": BG,
-        "savefig.facecolor": BG, "axes.edgecolor": LINE, "axes.labelcolor": MUTED,
-        "xtick.color": MUTED, "ytick.color": MUTED, "text.color": TEXT,
-        "axes.spines.top": False, "axes.spines.right": False, "figure.dpi": 150,
-        "axes.grid": True, "grid.color": LINE, "grid.linewidth": 0.6, "axes.axisbelow": True,
-        "legend.labelcolor": TEXT,
-    })
+    plt.rcParams.update(
+        {
+            "font.family": SANS,
+            "figure.facecolor": BG,
+            "axes.facecolor": BG,
+            "savefig.facecolor": BG,
+            "axes.edgecolor": LINE,
+            "axes.labelcolor": MUTED,
+            "xtick.color": MUTED,
+            "ytick.color": MUTED,
+            "text.color": TEXT,
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            "figure.dpi": 150,
+            "axes.grid": True,
+            "grid.color": LINE,
+            "grid.linewidth": 0.6,
+            "axes.axisbelow": True,
+            "legend.labelcolor": TEXT,
+        }
+    )
 
 
 def title(ax: plt.Axes, text: str, sub: str | None = None) -> None:

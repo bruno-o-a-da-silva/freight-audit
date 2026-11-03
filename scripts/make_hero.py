@@ -17,10 +17,13 @@ def main() -> None:
     style()
     table = synthetic_tariffs()
     inv = next(
-        i for i in synthetic_invoices(2000, table, seed=42)
-        if i.mode == "air" and volumetric_weight_kg(
+        i
+        for i in synthetic_invoices(2000, table, seed=42)
+        if i.mode == "air"
+        and volumetric_weight_kg(
             i.length_cm, i.width_cm, i.height_cm, table.lookup(i.lane, i.mode).divisor_cm3_per_kg
-        ) > i.actual_kg
+        )
+        > i.actual_kg
     )
     div = table.lookup(inv.lane, inv.mode).divisor_cm3_per_kg
     L, W, H = inv.length_cm, inv.width_cm, inv.height_cm
@@ -29,14 +32,26 @@ def main() -> None:
 
     fig = plt.figure(figsize=(16, 6.4), dpi=100)
     fig.text(0.05, 0.70, "freight-audit", fontfamily=SERIF, fontsize=50, color=TEXT)
-    fig.text(0.05, 0.60, "Recompute every freight invoice from the contract.",
-             fontsize=17, color=TEXT)
+    fig.text(
+        0.05, 0.60, "Recompute every freight invoice from the contract.", fontsize=17, color=TEXT
+    )
     fig.text(0.05, 0.545, "Flag the ones that do not match.", fontsize=17, color=MUTED)
     fig.add_artist(plt.Line2D([0.05, 0.12], [0.47, 0.47], color=GOLD, lw=2))
-    fig.text(0.05, 0.38, "chargeable = max(actual, L\u00b7W\u00b7H / divisor)",
-             fontsize=14, color=GOLD, fontfamily="DejaVu Sans Mono")
-    fig.text(0.05, 0.32, f"{inv.invoice_id}  \u00b7  {inv.lane} air  \u00b7  divisor {div:.0f}",
-             fontsize=12, color=MUTED)
+    fig.text(
+        0.05,
+        0.38,
+        "chargeable = max(actual, L\u00b7W\u00b7H / divisor)",
+        fontsize=14,
+        color=GOLD,
+        fontfamily="DejaVu Sans Mono",
+    )
+    fig.text(
+        0.05,
+        0.32,
+        f"{inv.invoice_id}  \u00b7  {inv.lane} air  \u00b7  divisor {div:.0f}",
+        fontsize=12,
+        color=MUTED,
+    )
 
     # Parcel, oblique projection
     ax = fig.add_axes((0.42, 0.12, 0.2, 0.76))
@@ -67,8 +82,14 @@ def main() -> None:
     cx.plot(xs, ys, color=GOLD, lw=2.2)
     cx.scatter([v], [v], s=40, color=BG, edgecolor=GOLD, zorder=4, lw=1.5)
     cx.scatter([float(inv.actual_kg)], [float(charged)], s=46, color=GOLD, zorder=5)
-    cx.annotate(f"billed as {charged} kg", (float(inv.actual_kg), float(charged)),
-                xytext=(0, 14), textcoords="offset points", color=TEXT, fontsize=11)
+    cx.annotate(
+        f"billed as {charged} kg",
+        (float(inv.actual_kg), float(charged)),
+        xytext=(0, 14),
+        textcoords="offset points",
+        color=TEXT,
+        fontsize=11,
+    )
     cx.text(v * 1.03, v * 0.84, f"crossover {v:.1f} kg", color=MUTED, fontsize=10)
     cx.text(v * 1.62, v * 1.82, "actual", color=MUTED, fontsize=10, ha="right")
     cx.text(v * 0.04, v * 1.1, "volumetric", color=MUTED, fontsize=10)

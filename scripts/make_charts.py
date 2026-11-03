@@ -25,12 +25,22 @@ def main() -> None:
     bars = ax.bar(lanes, vals, color=GOLD_DIM, width=0.62)
     bars[0].set_color(GOLD)
     for b, v in zip(bars, vals, strict=True):
-        ax.text(b.get_x() + b.get_width() / 2, v, f"{v:,.0f}", ha="center", va="bottom",
-                fontsize=9, color=TEXT)
+        ax.text(
+            b.get_x() + b.get_width() / 2,
+            v,
+            f"{v:,.0f}",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+            color=TEXT,
+        )
     ax.grid(axis="x", visible=False)
     ax.set_ylabel("Overcharge")
-    title(ax, "Recoverable overcharge by lane",
-          f"Total {s.recoverable:,.2f} across {len(findings):,} invoices")
+    title(
+        ax,
+        "Recoverable overcharge by lane",
+        f"Total {s.recoverable:,.2f} across {len(findings):,} invoices",
+    )
     fig.tight_layout()
     fig.savefig(IMG / "overcharge_by_lane.png")
     plt.close(fig)
