@@ -43,5 +43,5 @@ def test_cli_end_to_end(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> N
         == 0
     )
     out = capsys.readouterr().out
-    assert "synthetic example data" in out
+    assert "Recoverable overcharge" in out
     assert report.exists()

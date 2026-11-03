@@ -32,7 +32,7 @@ def main(argv: list[str] | None = None) -> int:
     table = load_tariffs(args.tariffs)
     findings = audit_all(load_invoices(args.invoices), table)
     write_report([f for f in findings if f.status != "ok"], args.report)
-    print("Freight audit summary (synthetic example data)")
+    print("Freight audit summary")
     for line in summarize(findings).lines():
         print(line)
     print(f"Discrepancy report: {args.report}")
