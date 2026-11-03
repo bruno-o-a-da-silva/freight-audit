@@ -1,7 +1,4 @@
-"""Seeded synthetic tariffs and invoices with injected billing errors.
-
-All values are synthetic example data; they do not describe any real carrier.
-"""
+"""Made-up tariffs and invoices for testing. Rates are invented, not from any carrier."""
 
 import random
 from dataclasses import replace
@@ -13,7 +10,7 @@ from freight_audit.weight import DEFAULT_DIVISORS
 
 LANES = ["GRU-MIA", "GRU-LIS", "GRU-FRA", "SAO-RIO", "SAO-CWB", "SAO-POA"]
 
-# Error types injected into a share of invoices, mimicking common billing faults.
+# Four common billing faults.
 ERROR_TYPES = ("wrong_divisor", "fuel_on_wrong_base", "wrong_break", "manual_surcharge")
 
 
@@ -44,7 +41,6 @@ def synthetic_tariffs() -> TariffTable:
 def synthetic_invoices(
     n: int, table: TariffTable, seed: int = 42, error_rate: float = 0.12
 ) -> list[Invoice]:
-    """Generate n invoices; about error_rate of them carry one injected billing error."""
     rng = random.Random(seed)
     out: list[Invoice] = []
     for k in range(n):
@@ -67,7 +63,7 @@ def synthetic_invoices(
         if rng.random() < error_rate:
             kind = rng.choice(ERROR_TYPES)
             if kind == "wrong_divisor":
-                # carrier applies a smaller divisor -> inflated volumetric weight
+                # smaller divisor means more volumetric kg
                 bad = replace(t, divisor_cm3_per_kg=t.divisor_cm3_per_kg * Decimal("0.8"))
                 exp_bad = expected_charge(draft, TariffTable([bad]))
                 freight, fuel = exp_bad.freight, exp_bad.fuel

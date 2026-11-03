@@ -10,11 +10,8 @@ from freight_audit.weight import DEFAULT_DIVISORS
 
 @dataclass(frozen=True)
 class Tariff:
-    """Rate card for one lane and mode.
-
-    breaks: ascending (min_kg, rate_per_kg) pairs; the rate of the highest break
-    whose min_kg <= chargeable weight applies to the whole weight.
-    """
+    # breaks: ascending (min_kg, rate_per_kg). The highest break reached prices the
+    # whole weight; no blended or break-point pricing.
 
     lane: str
     mode: str
@@ -31,8 +28,6 @@ class Tariff:
 
 
 class TariffTable:
-    """Lookup of tariffs keyed by (lane, mode)."""
-
     def __init__(self, tariffs: list[Tariff]) -> None:
         self._by_key: dict[tuple[str, str], Tariff] = {}
         for t in tariffs:
@@ -58,7 +53,7 @@ TARIFF_FIELDS = ["lane", "mode", "min_kg", "rate_per_kg", "minimum_charge", "fue
 
 
 def load_tariffs(path: Path) -> TariffTable:
-    """Load a long-format tariff CSV (one row per weight break)."""
+    # One row per weight break; minimum, fuel and divisor are read from the first row.
     grouped: dict[tuple[str, str], list[dict[str, str]]] = {}
     with path.open(newline="") as fh:
         for row in csv.DictReader(fh):

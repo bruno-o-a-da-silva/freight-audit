@@ -17,7 +17,7 @@ def money(value: Decimal) -> Decimal:
 
 @dataclass(frozen=True)
 class Invoice:
-    """One billed shipment line. Dimensions in cm, weights in kg, money in currency units."""
+    # cm, kg, and invoice currency
 
     invoice_id: str
     lane: str
@@ -59,7 +59,7 @@ class Finding:
 def expected_charge(
     inv: Invoice, table: TariffTable, increment_kg: Decimal = Decimal("0.5")
 ) -> Expected:
-    """Freight = max(chargeable_kg * rate, minimum); fuel = freight * fuel_pct / 100."""
+    # Fuel is a percentage of freight after the minimum, not of the linehaul.
     t = table.lookup(inv.lane, inv.mode)
     ckg = chargeable_weight_kg(
         inv.actual_kg,
