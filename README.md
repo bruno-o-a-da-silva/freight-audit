@@ -39,7 +39,7 @@ ruff check . && mypy
 `invoices.csv`:
 `invoice_id,lane,mode,actual_kg,length_cm,width_cm,height_cm,billed_freight,billed_fuel`.
 
-Charts in `docs/` are redrawn with `pip install matplotlib && PYTHONPATH=src python scripts/make_charts.py`.
+Figures in `docs/img/` are redrawn with `pip install matplotlib && PYTHONPATH=src:scripts python scripts/make_charts.py` (and `scripts/make_hero.py`).
 
 ## Result on the generated data
 
@@ -59,8 +59,8 @@ wrong weight break, or a manual surcharge. Output of the audit command above:
 Fewer than 12% get flagged because some injected errors change nothing, e.g. a
 wrong weight break on a shipment that is already in the first break.
 
-![Recoverable overcharge by lane](docs/overcharge_by_lane.png)
-![Difference histogram](docs/difference_histogram.png)
+![Recoverable overcharge by lane](docs/img/overcharge_by_lane.png)
+![Difference histogram](docs/img/difference_histogram.png)
 
 ## Limits
 

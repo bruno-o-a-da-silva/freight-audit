@@ -1,36 +1,13 @@
-"""Render docs/ charts from the seeded synthetic dataset (requires matplotlib)."""
+"""Redraw docs/img charts from the seeded generator (seed 42, n=2000). Needs matplotlib."""
 
 from collections import defaultdict
 from decimal import Decimal
-from pathlib import Path
 
-import matplotlib
+from _style import BG, GOLD, GOLD_DIM, IMG, MUTED, TEXT, style, title
 
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib import font_manager  # noqa: E402
-
-from freight_audit.audit import audit_all, summarize  # noqa: E402
-from freight_audit.synth import synthetic_invoices, synthetic_tariffs  # noqa: E402
-
-INDIGO, INDIGO_MID, INDIGO_LIGHT = "#3A2FD0", "#6E66F0", "#8F89FF"
-PINK, PINK_TEXT = "#FF2E88", "#D81B6E"
-DOCS = Path(__file__).resolve().parent.parent / "docs"
-
-
-def style() -> None:
-    for f in font_manager.findSystemFonts():
-        if any(n in f for n in ("Playfair", "Inter", "IBMPlexMono")):
-            font_manager.fontManager.addfont(f)
-    plt.rcParams.update({
-        "font.family": "Inter", "axes.edgecolor": "#C9C6F5", "axes.labelcolor": "#1B1650",
-        "xtick.color": "#1B1650", "ytick.color": "#1B1650", "axes.spines.top": False,
-        "axes.spines.right": False, "figure.dpi": 150,
-    })
-
-
-def title(ax: plt.Axes, text: str) -> None:
-    ax.set_title(text, fontfamily="Playfair Display", fontsize=15, color=INDIGO, loc="left")
+import matplotlib.pyplot as plt
+from freight_audit.audit import audit_all, summarize
+from freight_audit.synth import synthetic_invoices, synthetic_tariffs
 
 
 def main() -> None:
@@ -42,30 +19,33 @@ def main() -> None:
     for f in findings:
         if f.status == "overcharge":
             by_lane[f.invoice.lane] += f.difference
-    lanes = sorted(by_lane)
-    fig, ax = plt.subplots(figsize=(8, 4.2))
-    bars = ax.bar(lanes, [float(by_lane[x]) for x in lanes], color=INDIGO_MID)
-    bars[max(range(len(lanes)), key=lambda i: by_lane[lanes[i]])].set_color(INDIGO)
-    title(ax, "Recoverable overcharge by lane")
-    ax.set_ylabel("Overcharge (currency units)")
-    ax.text(0.99, 0.97, f"total {s.recoverable:,.2f}", transform=ax.transAxes, ha="right",
-            va="top", color=PINK_TEXT, fontfamily="IBM Plex Mono", fontsize=10)
-    fig.text(0.01, 0.01, "synthetic example data, seed 42, n=2000", fontsize=8,
-             color="#6B679A", fontfamily="IBM Plex Mono")
-    fig.tight_layout(rect=(0, 0.03, 1, 1))
-    fig.savefig(DOCS / "overcharge_by_lane.png")
+    lanes = sorted(by_lane, key=lambda x: by_lane[x], reverse=True)
+    fig, ax = plt.subplots(figsize=(9, 4.4))
+    vals = [float(by_lane[x]) for x in lanes]
+    bars = ax.bar(lanes, vals, color=GOLD_DIM, width=0.62)
+    bars[0].set_color(GOLD)
+    for b, v in zip(bars, vals, strict=True):
+        ax.text(b.get_x() + b.get_width() / 2, v, f"{v:,.0f}", ha="center", va="bottom",
+                fontsize=9, color=TEXT)
+    ax.grid(axis="x", visible=False)
+    ax.set_ylabel("Overcharge")
+    title(ax, "Recoverable overcharge by lane",
+          f"Total {s.recoverable:,.2f} across {len(findings):,} invoices")
+    fig.tight_layout()
+    fig.savefig(IMG / "overcharge_by_lane.png")
+    plt.close(fig)
 
     diffs = [float(f.difference) for f in findings if f.status != "ok"]
-    fig, ax = plt.subplots(figsize=(8, 4.2))
-    ax.hist(diffs, bins=30, color=INDIGO_LIGHT, edgecolor=INDIGO)
-    ax.axvline(0, color=PINK, lw=1.5)
-    title(ax, "Billed minus expected, flagged invoices")
-    ax.set_xlabel("Difference per invoice (currency units)")
+    fig, ax = plt.subplots(figsize=(9, 4.4))
+    ax.hist(diffs, bins=30, color=GOLD, edgecolor=BG, linewidth=0.8)
+    ax.axvline(0, color=MUTED, lw=1, ls="--")
+    ax.grid(axis="x", visible=False)
+    title(ax, "Billed minus expected", f"{len(diffs)} flagged invoices")
+    ax.set_xlabel("Difference per invoice")
     ax.set_ylabel("Invoices")
-    fig.text(0.01, 0.01, "synthetic example data, seed 42, n=2000", fontsize=8,
-             color="#6B679A", fontfamily="IBM Plex Mono")
-    fig.tight_layout(rect=(0, 0.03, 1, 1))
-    fig.savefig(DOCS / "difference_histogram.png")
+    fig.tight_layout()
+    fig.savefig(IMG / "difference_histogram.png")
+    plt.close(fig)
 
 
 if __name__ == "__main__":
