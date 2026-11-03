@@ -1,7 +1,10 @@
-# freight-audit
+<p align="center">
+  <img src="docs/img/hero.png" width="100%" alt="freight-audit: an 83 x 34 x 100 cm parcel next to a chart where chargeable weight stays flat at the 47.0 kg volumetric weight until actual weight passes it">
+</p>
 
-Recomputes what each freight invoice should have cost under the contract and
-lists the ones that don't match.
+<p align="center"><em>Seeded generator, seed 42: invoice INV-00010, GRU-FRA air, divisor 6000. All data is synthetic.</em></p>
+
+Recomputes what each freight invoice should have cost under the contract and lists the ones that do not match.
 
 ## Problem
 
@@ -56,11 +59,19 @@ wrong weight break, or a manual surcharge. Output of the audit command above:
 | Expected total | 1,029,951.57 |
 | Recoverable overcharge | 20,381.87 |
 
-Fewer than 12% get flagged because some injected errors change nothing, e.g. a
-wrong weight break on a shipment that is already in the first break.
+The three air lanes out of GRU account for most of the recoverable amount;
+GRU-FRA alone is 8,466.51 of the 20,381.87.
 
-![Recoverable overcharge by lane](docs/img/overcharge_by_lane.png)
-![Difference histogram](docs/img/difference_histogram.png)
+<p align="center"><img src="docs/img/overcharge_by_lane.png" width="760" alt="Bar chart of recoverable overcharge by lane, GRU-FRA highest at 8,466.51, SAO-CWB lowest at 778.92"></p>
+<p align="center"><em>Overcharge per lane, synthetic data from the seeded generator (seed 42, 2,000 invoices).</em></p>
+
+Fewer than 12% get flagged because some injected errors change nothing, for
+example a wrong weight break on a shipment that is already in the first break.
+Most flagged differences are below 100 per invoice, with a smaller group
+between 600 and 800.
+
+<p align="center"><img src="docs/img/difference_histogram.png" width="760" alt="Histogram of billed minus expected for 199 flagged invoices, most below 100, a second cluster between 600 and 800"></p>
+<p align="center"><em>Billed minus expected per flagged invoice, synthetic data (seed 42).</em></p>
 
 ## Limits
 
